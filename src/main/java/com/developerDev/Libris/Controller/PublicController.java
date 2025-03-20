@@ -1,4 +1,4 @@
-package Controller;
+package com.developerDev.Libris.Controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
