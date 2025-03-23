@@ -2,27 +2,38 @@ package com.developerDev.Libris.Controller;
 
 
 import com.developerDev.Libris.Entity.User;
+import com.developerDev.Libris.ExceptionHandler.CustomException;
+import com.developerDev.Libris.Service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/public")
+@RequestMapping("/user")
 public class UserController {
 
+    private final UserService userService;
 
-    @PostMapping("/add-user")
-    public ResponseEntity<String> addUser(@RequestBody User user){
-        log.info(user.toString());
-        return new ResponseEntity<>("User data received", HttpStatus.OK);
-
+    public UserController(UserService userService){
+        this.userService =userService;
     }
+
+
+
+
+    @GetMapping("/get-user")
+    public ResponseEntity<String> getUser(){
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        return new ResponseEntity<>(authentication.getName(),HttpStatus.OK);
+    }
+
 
 
 }

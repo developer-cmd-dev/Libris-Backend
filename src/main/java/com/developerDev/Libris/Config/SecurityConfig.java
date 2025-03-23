@@ -30,7 +30,6 @@ public class SecurityConfig {
     public DefaultSecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         return http.authorizeHttpRequests(request -> request
-
                         .requestMatchers("/public/**","/health-check").permitAll()
                         .requestMatchers("/user/**").authenticated()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
