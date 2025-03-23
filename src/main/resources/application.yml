@@ -1,0 +1,7 @@
+spring:
+  data:
+    mongodb:
+      uri: ${MONGO_URL}
+      database: libris
+      auto-index-creation: true
+
