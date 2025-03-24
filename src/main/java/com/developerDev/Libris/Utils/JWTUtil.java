@@ -1,5 +1,6 @@
 package com.developerDev.Libris.Utils;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,9 +33,35 @@ public class JWTUtil {
                 .header().empty().add("typ","JWT")
                 .and()
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis()+1000*60*5))
+                .expiration(new Date(System.currentTimeMillis()+1000*60*60))
                 .signWith(getSigninKey())
                 .compact();
+    }
+
+
+    public String extractUsername(String token){
+        return extractAllClaims(token).getSubject();
+    }
+
+    public Claims extractAllClaims(String token){
+        return Jwts.parser()
+                .verifyWith(getSigninKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
+
+    private Boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
+
+    public Boolean validateToken(String token) {
+        return !isTokenExpired(token);
+    }
+
+    public Date extractExpiration(String token) {
+        return extractAllClaims(token).getExpiration();
     }
 
 }
