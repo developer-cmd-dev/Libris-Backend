@@ -5,3 +5,7 @@ spring:
       database: Libris
       auto-index-creation: true
 
+
+jwt:
+  secretKey: ${JWT_SECRET_KEY}
+

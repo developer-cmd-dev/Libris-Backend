@@ -1,0 +1,40 @@
+package com.developerDev.Libris.Utils;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import javax.crypto.SecretKey;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+@Component
+public class JWTUtil {
+
+    @Value("${jwt.secretKey}")
+    private String SECRET_KEY;
+
+    public String generateToken(String username){
+        Map<String,Object> claims = new HashMap<>();
+        return createToken(claims,username);
+    }
+
+    private SecretKey getSigninKey(){
+        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+    }
+
+    public String createToken(Map<String ,Object> claims,String subject){
+        return Jwts.builder()
+                .claims(claims)
+                .subject(subject)
+                .header().empty().add("typ","JWT")
+                .and()
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis()+1000*60*5))
+                .signWith(getSigninKey())
+                .compact();
+    }
+
+}

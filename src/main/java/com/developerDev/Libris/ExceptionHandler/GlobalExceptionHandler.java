@@ -18,6 +18,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
+
+
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<ErrorResponse> handleCustomException(CustomException ex){
         ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(),ex.getHttpStatus().value(), LocalDateTime.now());
