@@ -5,6 +5,7 @@ import com.developerDev.Libris.ExceptionHandler.CustomException;
 import com.developerDev.Libris.Service.UserDetailServiceImpl;
 import com.developerDev.Libris.Service.UserService;
 import com.developerDev.Libris.Utils.JWTUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -41,28 +42,25 @@ public class PublicController {
 
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody User user){
+        log.info(user.toString());
         User response = userService.addUser(user);
         if(response==null){
             throw new CustomException("Something went wrong",HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>("User saved.",HttpStatus.OK);
 
-
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User user){
-
+    public ResponseEntity<String> login(@RequestBody User user, HttpServletResponse response){
         try{
-
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(),user.getPassword()));
-
-            UserDetails userDetails =  userDetailService.loadUserByUsername(user.getEmail());
-            String jwtToken = jwtUtil.generateToken(userDetails.getUsername());
-            return new ResponseEntity<>(jwtToken,HttpStatus.OK);
+            String token = userService.loginUser(user);
+            response.setHeader("cookie",token);
+            return new ResponseEntity<>("Login Successfully",HttpStatus.OK);
 
         } catch (BadCredentialsException e) {
-            throw new BadCredentialsException("Wrong username or password");
+            log.error(e.getLocalizedMessage());
+            return new ResponseEntity<>(e.getLocalizedMessage(),HttpStatus.UNAUTHORIZED);
         }
 
 

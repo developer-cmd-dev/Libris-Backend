@@ -2,6 +2,10 @@ package com.developerDev.Libris.Service;
 
 import com.developerDev.Libris.Entity.User;
 import com.developerDev.Libris.Repository.UserReopository;
+import com.developerDev.Libris.Utils.JWTUtil;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,10 +17,16 @@ public class UserService {
 
 
     private final UserReopository reopository;
+    private final AuthenticationManager authenticationManager;
+    private final UserDetailServiceImpl userDetailService;
+    private final JWTUtil jwtUtil;
     private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public UserService(UserReopository reopository){
+    public UserService(UserReopository reopository, AuthenticationManager authenticationManager, UserDetailServiceImpl userDetailService, JWTUtil jwtUtil){
         this.reopository = reopository;
+        this.authenticationManager = authenticationManager;
+        this.userDetailService = userDetailService;
+        this.jwtUtil = jwtUtil;
     }
 
 
@@ -27,6 +37,12 @@ public class UserService {
             return reopository.save(user);
         }
         return isUserAvail;
+    }
+
+    public String loginUser(User user){
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(),user.getPassword()));
+        UserDetails userDetails =  userDetailService.loadUserByUsername(user.getEmail());
+        return  jwtUtil.generateToken(userDetails.getUsername());
     }
 
     public List<User> getUsers(){
