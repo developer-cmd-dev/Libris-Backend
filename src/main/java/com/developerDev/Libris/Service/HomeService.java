@@ -1,5 +1,6 @@
 package com.developerDev.Libris.Service;
 
+import com.developerDev.Libris.JsonResposeEntity.BooksDataResponse;
 import com.developerDev.Libris.JsonResposeEntity.Kittens;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
@@ -12,7 +13,7 @@ import org.springframework.web.client.RestTemplate;
 public class HomeService {
 
     private final RestTemplate restTemplate;
-    private final String url="https://catfact.ninja/fact";
+    private final String url="https://gutendex.com/books";
 
 
     public HomeService(RestTemplate restTemplate) {
@@ -20,11 +21,10 @@ public class HomeService {
     }
 
 
-    public Kittens getAllBooks(){
+    public BooksDataResponse getAllBooks(){
 
-        ResponseEntity<Kittens> response = restTemplate.exchange(url, HttpMethod.GET,null,Kittens.class);
+        ResponseEntity<BooksDataResponse> response = restTemplate.exchange(url, HttpMethod.GET,null,BooksDataResponse.class);
         return response.getBody();
-
 
     }
 

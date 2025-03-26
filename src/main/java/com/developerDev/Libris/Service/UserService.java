@@ -51,9 +51,7 @@ public class UserService {
         return  jwtUtil.generateToken(userDetails.getUsername());
     }
 
-    public List<User> getUsers(){
-        return reopository.findAll();
-    }
+
 
 
 

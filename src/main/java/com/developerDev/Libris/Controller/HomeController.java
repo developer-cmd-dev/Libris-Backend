@@ -1,5 +1,7 @@
 package com.developerDev.Libris.Controller;
 
+import com.developerDev.Libris.ExceptionHandler.CustomException;
+import com.developerDev.Libris.JsonResposeEntity.BooksDataResponse;
 import com.developerDev.Libris.JsonResposeEntity.Kittens;
 import com.developerDev.Libris.Service.HomeService;
 import jakarta.servlet.http.HttpServlet;
@@ -22,8 +24,11 @@ public class HomeController {
 
 
     @GetMapping
-    public ResponseEntity<Kittens> getAllBooks(){
-        Kittens res = homeService.getAllBooks();
-        return new ResponseEntity<>(res, HttpStatus.OK);
+    public ResponseEntity<BooksDataResponse> getAllBooks(){
+        BooksDataResponse res = homeService.getAllBooks();
+        if (res!=null){
+            return new ResponseEntity<>(res, HttpStatus.OK);
+        }
+        throw new CustomException("Books did not fetch",HttpStatus.BAD_REQUEST);
     }
 }
