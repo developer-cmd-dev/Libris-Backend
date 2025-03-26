@@ -34,11 +34,7 @@ public class UserController {
         return new ResponseEntity<>(authentication.getName(),HttpStatus.OK);
     }
 
-    @GetMapping("/get-all-users")
-    public ResponseEntity<List<User>> getAllUser(){
-        List<User> users = userService.getUsers();
-        return new ResponseEntity<>(users,HttpStatus.OK);
-    }
+
 
 
 

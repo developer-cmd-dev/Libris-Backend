@@ -42,7 +42,6 @@ public class PublicController {
 
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody User user){
-        log.info(user.toString());
         User response = userService.addUser(user);
         if(response==null){
             throw new CustomException("Something went wrong",HttpStatus.BAD_REQUEST);
