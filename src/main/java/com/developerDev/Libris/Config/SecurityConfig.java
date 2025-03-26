@@ -38,11 +38,12 @@ public class SecurityConfig {
     public DefaultSecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         return http.authorizeHttpRequests(request -> request
-                        .requestMatchers("/public/**","/health-check").permitAll()
+                        .requestMatchers("/public/**","/health-check","/home").permitAll()
                         .requestMatchers("/user/**").authenticated()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
+                .exceptionHandling(exception->exception.authenticationEntryPoint(customBasicAuthenticationEntryPoint))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
 

@@ -10,7 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,14 +52,21 @@ public class PublicController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody User user){
+
         try{
+
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(),user.getPassword()));
-           UserDetails userDetails =  userDetailService.loadUserByUsername(user.getEmail());
+
+            UserDetails userDetails =  userDetailService.loadUserByUsername(user.getEmail());
             String jwtToken = jwtUtil.generateToken(userDetails.getUsername());
             return new ResponseEntity<>(jwtToken,HttpStatus.OK);
-        } catch (Exception e) {
-           throw new CustomException("Something went wrong to generate token",HttpStatus.BAD_REQUEST);
+
+        } catch (BadCredentialsException e) {
+            throw new BadCredentialsException("Wrong username or password");
         }
+
+
+
 
     }
 
