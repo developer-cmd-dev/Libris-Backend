@@ -1,7 +1,9 @@
 package com.developerDev.Libris.Config;
 
 
+import com.developerDev.Libris.AuthenticationFailureHandler.CustomAccessDeniedBearerToken;
 import com.developerDev.Libris.AuthenticationFailureHandler.CustomBasicAuthenticationEntryPoint;
+import com.developerDev.Libris.AuthenticationFailureHandler.CustomBearerAuthenticationEntryPoint;
 import com.developerDev.Libris.Service.UserDetailServiceImpl;
 import com.developerDev.Libris.filter.JWTFilter;
 import org.springframework.context.annotation.Bean;
@@ -25,11 +27,15 @@ public class SecurityConfig {
     private final UserDetailServiceImpl userDetailService;
     private final JWTFilter jwtFilter;
     private final CustomBasicAuthenticationEntryPoint customBasicAuthenticationEntryPoint;
+    private final CustomBearerAuthenticationEntryPoint customBearerAuthenticationEntryPoint;
+    private final CustomAccessDeniedBearerToken customAccessDeniedBearerToken;
     public SecurityConfig(UserDetailServiceImpl userDetailService,
-                          CustomBasicAuthenticationEntryPoint customBasicAuthenticationEntryPoint,JWTFilter jwtFilter){
+                          CustomBasicAuthenticationEntryPoint customBasicAuthenticationEntryPoint, JWTFilter jwtFilter, CustomBearerAuthenticationEntryPoint customBearerAuthenticationEntryPoint, CustomAccessDeniedBearerToken customAccessDeniedBearerToken){
         this.customBasicAuthenticationEntryPoint = customBasicAuthenticationEntryPoint;
         this.userDetailService =userDetailService;
         this.jwtFilter = jwtFilter;
+        this.customBearerAuthenticationEntryPoint = customBearerAuthenticationEntryPoint;
+        this.customAccessDeniedBearerToken = customAccessDeniedBearerToken;
     }
 
 
@@ -43,7 +49,7 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
-                .exceptionHandling(exception->exception.authenticationEntryPoint(customBasicAuthenticationEntryPoint))
+                .exceptionHandling(httpSecurity->httpSecurity.authenticationEntryPoint(customBearerAuthenticationEntryPoint).accessDeniedHandler(customAccessDeniedBearerToken))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
 

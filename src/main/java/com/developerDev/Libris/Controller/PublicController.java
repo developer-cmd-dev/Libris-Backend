@@ -52,15 +52,10 @@ public class PublicController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody User user, HttpServletResponse response){
-        try{
+
             String token = userService.loginUser(user);
             response.setHeader("cookie",token);
             return new ResponseEntity<>("Login Successfully",HttpStatus.OK);
-
-        } catch (BadCredentialsException e) {
-            log.error(e.getLocalizedMessage());
-            return new ResponseEntity<>(e.getLocalizedMessage(),HttpStatus.UNAUTHORIZED);
-        }
 
 
 
