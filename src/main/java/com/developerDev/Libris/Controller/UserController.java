@@ -1,6 +1,7 @@
 package com.developerDev.Libris.Controller;
 
 
+import com.developerDev.Libris.Entity.Books;
 import com.developerDev.Libris.Entity.User;
 import com.developerDev.Libris.ExceptionHandler.CustomException;
 import com.developerDev.Libris.Service.UserService;
@@ -13,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 @Slf4j
 @RestController
@@ -25,13 +27,25 @@ public class UserController {
         this.userService =userService;
     }
 
+    private String getAutheticatedUsername(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getName();
+    }
+
 
 
 
     @GetMapping("/get-user")
     public ResponseEntity<String> getUser(){
-        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
-        return new ResponseEntity<>(authentication.getName(),HttpStatus.OK);
+
+        return new ResponseEntity<>(getAutheticatedUsername(),HttpStatus.OK);
+    }
+
+
+    @PostMapping("/buy-book")
+    public ResponseEntity<User> buyBook(@RequestBody Books books){
+        User response = userService.buyBook(books,getAutheticatedUsername());
+        return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
 

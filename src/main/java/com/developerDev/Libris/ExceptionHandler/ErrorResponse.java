@@ -1,22 +1,16 @@
 package com.developerDev.Libris.ExceptionHandler;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import org.springframework.http.HttpStatus;
+
 import java.time.LocalDateTime;
 
+@AllArgsConstructor
+@Data
 public class ErrorResponse {
-
     private String message;
     private int status;
     private LocalDateTime time;
-
-    public ErrorResponse(String message , int status, LocalDateTime time) {
-        this.message=message;
-        this.status=status;
-        this.time=time;
-    }
-
-    @Override
-    public String toString() {
-        return super.toString();
-    }
 
 }
