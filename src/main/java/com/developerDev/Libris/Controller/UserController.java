@@ -14,6 +14,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 @Slf4j
@@ -26,11 +28,12 @@ public class UserController {
     public UserController(UserService userService){
         this.userService =userService;
     }
+    Supplier<String> getAuthenticatedUsername=()->SecurityContextHolder.getContext().getAuthentication().getName();
 
-    private String getAutheticatedUsername(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication.getName();
-    }
+//    private String getAutheticatedUsername(){
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        return authentication.getName();
+//    }
 
 
 
@@ -38,13 +41,13 @@ public class UserController {
     @GetMapping("/get-user")
     public ResponseEntity<String> getUser(){
 
-        return new ResponseEntity<>(getAutheticatedUsername(),HttpStatus.OK);
+        return new ResponseEntity<>(getAuthenticatedUsername.get(),HttpStatus.OK);
     }
 
 
     @PostMapping("/buy-book")
     public ResponseEntity<User> buyBook(@RequestBody Books books){
-        User response = userService.buyBook(books,getAutheticatedUsername());
+        User response = userService.buyBook(books,getAuthenticatedUsername.get());
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 

@@ -10,6 +10,10 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 @Component
 public class JWTUtil {
@@ -17,16 +21,18 @@ public class JWTUtil {
     @Value("${jwt.secretKey}")
     private String SECRET_KEY;
 
+    public JWTUtil(String secretKey) {
+        SECRET_KEY = secretKey;
+    }
+
     public String generateToken(String username){
         Map<String,Object> claims = new HashMap<>();
-        return createToken(claims,username);
+        return createToken.apply(claims,username);
     }
 
-    private SecretKey getSigninKey(){
-        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
-    }
+    Supplier<SecretKey>getSignInKey=()->Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
-    public String createToken(Map<String ,Object> claims,String subject){
+    BiFunction<Map<String,Object>,String,String> createToken=(claims,subject)->{
         return Jwts.builder()
                 .claims(claims)
                 .subject(subject)
@@ -34,34 +40,24 @@ public class JWTUtil {
                 .and()
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis()+1000*60*60))
-                .signWith(getSigninKey())
+                .signWith(getSignInKey.get())
                 .compact();
-    }
+    };
 
+    Function<String,Claims> extractAllClaims=token-> Jwts.parser().verifyWith(getSignInKey.get()).build().parseSignedClaims(token).getPayload();
+
+
+    Function<String,Date> extractExpiration=token->extractAllClaims.apply(token).getExpiration();
+
+    Predicate<String> isTokenExpired = token->extractExpiration.apply(token).before(new Date());
 
     public String extractUsername(String token){
-        return extractAllClaims(token).getSubject();
+        return extractAllClaims.apply(token).getSubject();
     }
-
-    public Claims extractAllClaims(String token){
-        return Jwts.parser()
-                .verifyWith(getSigninKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
-    }
-
-    private Boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
-    }
-
 
     public Boolean validateToken(String token) {
-        return !isTokenExpired(token);
+        return !isTokenExpired.test(token);
     }
 
-    public Date extractExpiration(String token) {
-        return extractAllClaims(token).getExpiration();
-    }
 
 }
