@@ -5,6 +5,7 @@ import com.developerDev.Libris.Entity.Books;
 import com.developerDev.Libris.Entity.User;
 import com.developerDev.Libris.ExceptionHandler.CustomException;
 import com.developerDev.Libris.Service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
@@ -49,6 +50,12 @@ public class UserController {
     public ResponseEntity<User> saveBook(@RequestBody Books books){
         User response = userService.saveBook(books,getAuthenticatedUsername.get());
         return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+
+    @PostMapping("/update-password")
+    public ResponseEntity<String> updatePassword(@RequestBody String newPassword, HttpServletResponse response){
+        response.setHeader("cookie",userService.updatePassword(newPassword));
+        return new ResponseEntity<>("Password changed and new token validate.",HttpStatus.OK);
     }
 
 

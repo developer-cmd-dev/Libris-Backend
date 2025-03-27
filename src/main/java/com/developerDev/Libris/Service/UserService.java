@@ -11,12 +11,14 @@ import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +32,7 @@ public class UserService {
     private final JWTUtil jwtUtil;
     private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private final BooksRepository booksRepository;
+    Supplier<String>getAuthenticatedUsername = ()-> SecurityContextHolder.getContext().getAuthentication().getName();
 
 
 
@@ -73,6 +76,17 @@ public class UserService {
            return userRepository.save(getUser);
         }
         throw new CustomException("Something wrong to save book!",HttpStatus.BAD_REQUEST);
+
+    }
+
+    public String updatePassword(String password){
+        String email = getAuthenticatedUsername.get();
+        User user = userRepository.findByEmail(email).orElse(null);
+        if(user!=null){
+            user.setPassword(passwordEncoder.encode(password));
+           return jwtUtil.generateToken(user.getEmail());
+        }
+        throw new CustomException("Something went wrong!",HttpStatus.INTERNAL_SERVER_ERROR);
 
     }
 
