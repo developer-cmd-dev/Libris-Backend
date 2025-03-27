@@ -45,9 +45,9 @@ public class UserController {
     }
 
 
-    @PostMapping("/buy-book")
-    public ResponseEntity<User> buyBook(@RequestBody Books books){
-        User response = userService.buyBook(books,getAuthenticatedUsername.get());
+    @PostMapping("/save-book")
+    public ResponseEntity<User> saveBook(@RequestBody Books books){
+        User response = userService.saveBook(books,getAuthenticatedUsername.get());
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 

@@ -58,17 +58,21 @@ public class UserService {
         return  jwtUtil.generateToken(userDetails.getUsername());
     }
 
-    public User buyBook(Books books,String username){
-        Books savedBooks = booksRepository.save(books);
-        User findUser=userRepository.findByEmail(username).orElse(null);
-        if(findUser!=null){
-            List<ObjectId> list = findUser.getBooksData();
-            list.add(savedBooks.getId());
-            findUser.setBooksData(list);
-           return userRepository.save(findUser);
+    public User saveBook(Books books,String username){
+        Books findBookInDb=booksRepository.findById(books.getId()).orElse(null);
+        if(findBookInDb==null){
+           try{
+               booksRepository.save(books);
+           }catch (Exception e){
+               throw new CustomException("Book not saved",HttpStatus.BAD_REQUEST);
+           }
         }
-
-        throw new CustomException("Something wrong to buy book!",HttpStatus.BAD_REQUEST);
+        User getUser = userRepository.findByEmail(username).orElse(null);
+        if(getUser!=null){
+            getUser.getBooksData().add(books);
+           return userRepository.save(getUser);
+        }
+        throw new CustomException("Something wrong to save book!",HttpStatus.BAD_REQUEST);
 
     }
 

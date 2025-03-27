@@ -21,9 +21,7 @@ public class JWTUtil {
     @Value("${jwt.secretKey}")
     private String SECRET_KEY;
 
-    public JWTUtil(String secretKey) {
-        SECRET_KEY = secretKey;
-    }
+
 
     public String generateToken(String username){
         Map<String,Object> claims = new HashMap<>();

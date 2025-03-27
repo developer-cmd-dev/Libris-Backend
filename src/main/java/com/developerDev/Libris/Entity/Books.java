@@ -2,20 +2,24 @@ package com.developerDev.Libris.Entity;
 
 import com.developerDev.Libris.JsonResposeEntity.BooksDataResponse;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 import java.util.Map;
-@Data
+
 @Document(collection = "books_collection")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class Books {
     @Id
-    private ObjectId id;
     @JsonProperty("id")
-    private int bookId;
+    private int id;
     private String title;
     private List<BooksDataResponse.Author> authors;
     private List<String> summaries;
@@ -38,4 +42,5 @@ public class Books {
         @JsonProperty("death_year")
         private Integer deathYear;
     }
+
 }
