@@ -1,6 +1,7 @@
 package com.developerDev.Libris.Entity;
 
 
+import com.developerDev.Libris.JsonResposeEntity.BooksDataResponse;
 import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
@@ -27,6 +28,6 @@ public class User {
     private String password;
     private List<String> roles;
     @DBRef
-    private List<Books>booksData=new ArrayList<>();
+    private List<BooksDataResponse.Book>booksData=new ArrayList<>();
 
 }

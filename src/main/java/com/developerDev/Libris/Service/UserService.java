@@ -49,7 +49,7 @@ public class UserService {
     public User addUser (User user){
         User isUserAvail= userRepository.findByEmail(user.getEmail()).orElse(null);
         if(isUserAvail==null){
-           user.setRoles(user.getRoles().stream().map(String::toUpperCase).collect(Collectors.toList()));
+           user.setRoles(user.getRoles().stream().map(String::toUpperCase).toList());
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             return userRepository.save(user);
         }
@@ -62,31 +62,46 @@ public class UserService {
         return  jwtUtil.generateToken(userDetails.getUsername());
     }
 
-    public User saveBook(Books books,String username){
-        BooksDataResponse.Book findBookInDb=booksRepository.findById(books.getId()).orElse(null);
-        if(findBookInDb!=null){
-            User getUser = userRepository.findByEmail(username).orElse(null);
-            if(getUser!=null){
-                getUser.getBooksData().add(books);
-                return userRepository.save(getUser);
-            }
-        }
-
-
-        throw new CustomException("Something wrong to save book!",HttpStatus.BAD_REQUEST);
-
-    }
-
     public String updatePassword(String password){
         String email = getAuthenticatedUsername.get();
         User user = userRepository.findByEmail(email).orElse(null);
         if(user!=null){
             user.setPassword(passwordEncoder.encode(password));
-           return jwtUtil.generateToken(user.getEmail());
+            return jwtUtil.generateToken(user.getEmail());
         }
         throw new CustomException("Something went wrong!",HttpStatus.INTERNAL_SERVER_ERROR);
 
     }
+
+    public User saveBook(int bookId,String username){
+
+        BooksDataResponse.Book findBookInDb=booksRepository.findById(bookId).orElse(null);
+        if(findBookInDb!=null){
+            User getUser = userRepository.findByEmail(username).orElse(null);
+            if(getUser!=null){
+                getUser.getBooksData().add(findBookInDb);
+                return userRepository.save(getUser);
+            }
+        }
+
+        throw new CustomException("Something wrong to save book!",HttpStatus.BAD_REQUEST);
+
+    }
+
+    public User deleteBook(int bookId,String username){
+        BooksDataResponse.Book findBookInDb=booksRepository.findById(bookId).orElse(null);
+        if(findBookInDb!=null){
+            User getUser = userRepository.findByEmail(username).orElse(null);
+            if(getUser!=null){
+                getUser.getBooksData().remove(findBookInDb);
+                return userRepository.save(getUser);
+            }
+        }
+
+        throw new CustomException("Something wrong to delete saved book!",HttpStatus.BAD_REQUEST);
+    }
+
+
 
 
 

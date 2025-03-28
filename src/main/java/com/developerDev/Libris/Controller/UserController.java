@@ -31,13 +31,6 @@ public class UserController {
     }
     Supplier<String> getAuthenticatedUsername=()->SecurityContextHolder.getContext().getAuthentication().getName();
 
-//    private String getAutheticatedUsername(){
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        return authentication.getName();
-//    }
-
-
-
 
     @GetMapping("/get-user")
     public ResponseEntity<String> getUser(){
@@ -47,8 +40,15 @@ public class UserController {
 
 
     @PostMapping("/save-book")
-    public ResponseEntity<User> saveBook(@RequestBody Books books){
-        User response = userService.saveBook(books,getAuthenticatedUsername.get());
+    public ResponseEntity<User> saveBook(@RequestBody String bookId){
+
+        User response = userService.saveBook(Integer.parseInt(bookId),getAuthenticatedUsername.get());
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete-saved-book")
+    public ResponseEntity<User> deleteSavedBook(@RequestBody String bookId){
+        User response = userService.deleteBook(Integer.parseInt(bookId),getAuthenticatedUsername.get());
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
