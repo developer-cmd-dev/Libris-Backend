@@ -27,12 +27,15 @@ public class Books {
     private List<String> subjects;
     private List<String> bookshelves;
     private List<String> languages;
+    private double price;
     private boolean copyright;
     @JsonProperty("media_type")
     private String mediaType;
     private Map<String, String> formats;
     @JsonProperty("download_count")
     private int downloadCount;
+
+
 
     @Data
     public static class Author {

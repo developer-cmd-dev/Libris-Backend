@@ -2,6 +2,7 @@ package com.developerDev.Libris.JsonResposeEntity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import org.springframework.data.annotation.Id;
 
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,8 @@ public class BooksDataResponse {
 
     @Data
     public static class Book {
+        @Id
+        @JsonProperty("id")
         private int id;
         private String title;
         private List<Author> authors;
@@ -24,6 +27,7 @@ public class BooksDataResponse {
         private List<String> bookshelves;
         private List<String> languages;
         private boolean copyright;
+        private double price;
         @JsonProperty("media_type")
         private String mediaType;
         private Map<String, String> formats;

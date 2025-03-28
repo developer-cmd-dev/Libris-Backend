@@ -3,6 +3,7 @@ package com.developerDev.Libris.Service;
 import com.developerDev.Libris.Entity.Books;
 import com.developerDev.Libris.Entity.User;
 import com.developerDev.Libris.ExceptionHandler.CustomException;
+import com.developerDev.Libris.JsonResposeEntity.BooksDataResponse;
 import com.developerDev.Libris.Repository.BooksRepository;
 import com.developerDev.Libris.Repository.UserReopository;
 import com.developerDev.Libris.Utils.JWTUtil;
@@ -62,19 +63,16 @@ public class UserService {
     }
 
     public User saveBook(Books books,String username){
-        Books findBookInDb=booksRepository.findById(books.getId()).orElse(null);
-        if(findBookInDb==null){
-           try{
-               booksRepository.save(books);
-           }catch (Exception e){
-               throw new CustomException("Book not saved",HttpStatus.BAD_REQUEST);
-           }
+        BooksDataResponse.Book findBookInDb=booksRepository.findById(books.getId()).orElse(null);
+        if(findBookInDb!=null){
+            User getUser = userRepository.findByEmail(username).orElse(null);
+            if(getUser!=null){
+                getUser.getBooksData().add(books);
+                return userRepository.save(getUser);
+            }
         }
-        User getUser = userRepository.findByEmail(username).orElse(null);
-        if(getUser!=null){
-            getUser.getBooksData().add(books);
-           return userRepository.save(getUser);
-        }
+
+
         throw new CustomException("Something wrong to save book!",HttpStatus.BAD_REQUEST);
 
     }

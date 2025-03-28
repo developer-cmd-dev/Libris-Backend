@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("home")
 public class HomeController {
@@ -24,11 +26,11 @@ public class HomeController {
 
 
     @GetMapping
-    public ResponseEntity<BooksDataResponse> getAllBooks(){
-        BooksDataResponse res = homeService.getAllBooks();
+    public ResponseEntity<List<BooksDataResponse.Book>> getAllBooks(){
+        List<BooksDataResponse.Book> res = homeService.getAllBooks();
         if (res!=null){
             return new ResponseEntity<>(res, HttpStatus.OK);
         }
-        throw new CustomException("Books did not fetch",HttpStatus.BAD_REQUEST);
+        throw new CustomException("Something went wrong!",HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
