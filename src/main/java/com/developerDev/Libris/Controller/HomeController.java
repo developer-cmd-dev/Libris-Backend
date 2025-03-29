@@ -10,6 +10,7 @@ import com.developerDev.Libris.Service.RentBookService;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,7 @@ public class HomeController {
     private final HomeService homeService;
     private final RentBookService rentBookService;
 
+    @Autowired
     public HomeController(HomeService homeService, RentBookService rentBookService) {
         this.homeService = homeService;
         this.rentBookService = rentBookService;

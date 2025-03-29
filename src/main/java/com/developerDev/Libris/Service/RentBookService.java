@@ -8,7 +8,9 @@ import com.developerDev.Libris.Repository.BooksRepository;
 import com.developerDev.Libris.Repository.RentedBooksRepository;
 import com.developerDev.Libris.Repository.UserReopository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,10 +25,14 @@ public class RentBookService {
     private final RentedBooksRepository rentedBooksRepository;
     private final BooksRepository booksRepository;
     private final UserReopository userReopository;
-    public RentBookService(RentedBooksRepository rentedBooksRepository, BooksRepository booksRepository, UserReopository userReopository) {
+    private final EmailService emailService;
+
+    @Autowired
+    public RentBookService(RentedBooksRepository rentedBooksRepository, BooksRepository booksRepository, UserReopository userReopository, EmailService emailService) {
         this.rentedBooksRepository = rentedBooksRepository;
         this.booksRepository = booksRepository;
         this.userReopository = userReopository;
+        this.emailService = emailService;
     }
     Supplier<String> getAuthenticatedName=()-> SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -47,6 +53,11 @@ public class RentBookService {
 
           RentedBooksData response =  rentedBooksRepository.save(data);
             user.getRentedBooks().add(response);
+            try{
+                emailService.sendMail(getAuthenticatedName.get(),getBook,data);
+            }catch (Exception e){
+                throw new CustomException(e.getLocalizedMessage(),HttpStatus.BAD_REQUEST);
+            }
           return userReopository.save(user);
         }
         throw new CustomException("Something went wrong to find book data", HttpStatus.NOT_FOUND);

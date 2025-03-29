@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Rental Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #4CAF50;
+            text-align: center;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        ul li {
+            background: #e9ecef;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            text-align: center;
+            color: gray;
+        }
+    </style>
+</head>
+<body>
+
+<div class="email-container">
+    <h2>Rental Confirmation</h2>
+
+    <p th:text="|Dear ${userName},|"></p>
+    <p>Thank you for renting <strong th:text="${bookTitle}"></strong> from Libris!</p>
+
+    <p><strong>Rental Details:</strong></p>
+    <ul>
+        <li th:text="|Book Title: ${bookTitle}|"></li>
+        <li th:text="|Author: ${authorName}|"></li>
+        <li th:text="|Rental Date: ${rentalDate}|"></li>
+        <li th:text="|Due Date: ${dueDate}|"></li>
+        <li th:text="|Rental ID: ${rentalId}|"></li>
+    </ul>
+
+    <img th:src="|data:image/png;base64,${logoBase64}|" alt="Application Logo" style="max-width: 150px; display: block; margin: auto;">
+
+    <p class="footer">Libris Team &copy; 2025</p>
+</div>
+
+</body>
+</html>
