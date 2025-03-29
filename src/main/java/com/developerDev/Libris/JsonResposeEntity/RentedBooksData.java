@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 public class RentedBooksData {
     @Id
     private ObjectId id;
-    @DBRef
     private int bookId;
     private LocalDateTime rentalDate;
     private LocalDateTime dueDate;

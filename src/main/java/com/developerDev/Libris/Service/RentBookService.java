@@ -7,6 +7,7 @@ import com.developerDev.Libris.JsonResposeEntity.RentedBooksData;
 import com.developerDev.Libris.Repository.BooksRepository;
 import com.developerDev.Libris.Repository.RentedBooksRepository;
 import com.developerDev.Libris.Repository.UserReopository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+@Slf4j
 @Service
 public class RentBookService {
 
@@ -31,10 +33,10 @@ public class RentBookService {
     Function<Double,Boolean> doPayment=(price->true);
 
     @Transactional
-    public void rentBook(RentedBooksData data, String bookId){
+    public User rentBook(RentedBooksData data, String bookId){
         BooksDataResponse.Book getBook = booksRepository.findById(Integer.parseInt(bookId)).orElse(null);
         User user=userReopository.findByEmail(getAuthenticatedName.get()).orElse(null);
-        if(getBook!=null){
+        if(getBook!=null&& user!=null){
             data.setBookId(getBook.getId());
             data.setUsername(getAuthenticatedName.get());
             if(Boolean.TRUE.equals(doPayment.apply(getBook.getPrice()))){
@@ -44,10 +46,9 @@ public class RentBookService {
             }
 
           RentedBooksData response =  rentedBooksRepository.save(data);
-
-
+            user.getRentedBooks().add(response);
+          return userReopository.save(user);
         }
-
         throw new CustomException("Something went wrong to find book data", HttpStatus.NOT_FOUND);
 
     }

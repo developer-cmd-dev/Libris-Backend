@@ -1,10 +1,12 @@
 package com.developerDev.Libris.Controller;
 
+import com.developerDev.Libris.Entity.User;
 import com.developerDev.Libris.ExceptionHandler.CustomException;
 import com.developerDev.Libris.JsonResposeEntity.BooksDataResponse;
 import com.developerDev.Libris.JsonResposeEntity.Kittens;
 import com.developerDev.Libris.JsonResposeEntity.RentedBooksData;
 import com.developerDev.Libris.Service.HomeService;
+import com.developerDev.Libris.Service.RentBookService;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -21,9 +23,11 @@ import java.util.List;
 public class HomeController {
 
     private final HomeService homeService;
+    private final RentBookService rentBookService;
 
-    public HomeController(HomeService homeService) {
+    public HomeController(HomeService homeService, RentBookService rentBookService) {
         this.homeService = homeService;
+        this.rentBookService = rentBookService;
     }
 
 
@@ -37,9 +41,8 @@ public class HomeController {
     }
 
     @PostMapping("/rent-book/{bookId}")
-    public  ResponseEntity<?> rentBook(@RequestBody RentedBooksData data, @PathVariable String bookId){
-        log.info(data.toString());
-        log.info(bookId);
-        return new ResponseEntity<>("got book data",HttpStatus.OK);
+    public  ResponseEntity<List<RentedBooksData>> rentBook(@RequestBody RentedBooksData data, @PathVariable String bookId){
+        User user = rentBookService.rentBook(data,bookId);
+        return new ResponseEntity<>(user.getRentedBooks(),HttpStatus.OK);
     }
 }
