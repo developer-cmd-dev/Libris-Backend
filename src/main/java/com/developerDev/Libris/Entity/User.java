@@ -2,6 +2,7 @@ package com.developerDev.Libris.Entity;
 
 
 import com.developerDev.Libris.JsonResposeEntity.BooksDataResponse;
+import com.developerDev.Libris.JsonResposeEntity.RentedBooksData;
 import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
@@ -29,5 +30,8 @@ public class User {
     private List<String> roles;
     @DBRef
     private List<BooksDataResponse.Book>booksData=new ArrayList<>();
+    @DBRef
+    private List<RentedBooksData> rentedBooks =new ArrayList<>();
+    @DBRef List<?> purchasedBooks=new ArrayList<>();
 
 }
