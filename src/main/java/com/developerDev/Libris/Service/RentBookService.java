@@ -54,7 +54,7 @@ public class RentBookService {
           RentedBooksData response =  rentedBooksRepository.save(data);
             user.getRentedBooks().add(response);
             try{
-                emailService.sendMail(getAuthenticatedName.get(),getBook,data);
+                emailService.sendRentConfirmationMail(getAuthenticatedName.get(),getBook,data);
             }catch (Exception e){
                 throw new CustomException(e.getLocalizedMessage(),HttpStatus.BAD_REQUEST);
             }
