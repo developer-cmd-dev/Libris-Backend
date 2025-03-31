@@ -10,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import java.util.stream.Stream;
 public class HomeService {
 
     private final RestTemplate restTemplate;
-    private final String url="https://gutendex.com/books";
+    private final String url="https://gutendex.com/book";
     private final BooksRepository booksRepository;
     private final Random randomValue = new Random();
 
@@ -34,17 +35,27 @@ public class HomeService {
     }
 
 
+    @Transactional
     public List<BooksDataResponse.Book> getAllBooks(){
-        List<BooksDataResponse.Book>dbData = booksRepository.findAll();
-        if(dbData.isEmpty()){
-            ResponseEntity<BooksDataResponse> response = restTemplate.exchange(url, HttpMethod.GET,null,BooksDataResponse.class);
-            List<BooksDataResponse.Book> listOfBooks = Objects.requireNonNull(response.getBody()).getResults();
-            return listOfBooks.stream().map(books -> {
-                books.setPrice(randomValue.nextDouble(1000));
-                return booksRepository.save(books);
-            }).toList();
-        }
+            List<BooksDataResponse.Book>dbData = booksRepository.findAll();
+            if(dbData.isEmpty()|| dbData==null){
+                   try {
+                       ResponseEntity<BooksDataResponse> response = restTemplate.exchange(url, HttpMethod.GET,null,BooksDataResponse.class);
+                       List<BooksDataResponse.Book> listOfBooks = Objects.requireNonNull(response.getBody()).getResults();
+                       return listOfBooks.stream().map(books -> {
+                           books.setPrice(randomValue.nextDouble(1000));
+                           return booksRepository.save(books);
+                       }).toList();
+
+                   }catch (Exception e){
+                       throw new CustomException("External API request failed . Unable to process request",
+                               HttpStatus.BAD_REQUEST);
+                   }
+            }
+
         return dbData;
+
+
     }
 
 

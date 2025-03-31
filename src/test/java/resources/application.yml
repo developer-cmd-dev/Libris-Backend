@@ -1,0 +1,27 @@
+spring:
+  data:
+    mongodb:
+      uri: ${MONGO_URL}
+      database: Libris
+      auto-index-creation: true
+  mail:
+    host: smtp.gmail.com
+    post: 587
+    username: ${GMAIL}
+    password: ${APP_KEY}
+    from: ${GMAIL}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+
+jwt:
+  secretKey: ${JWT_SECRET_KEY}
+
+
+
+
+
