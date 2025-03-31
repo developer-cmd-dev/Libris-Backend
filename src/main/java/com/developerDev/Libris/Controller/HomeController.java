@@ -55,5 +55,10 @@ public class HomeController {
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
+    @GetMapping("/search/findByTitle")
+    public ResponseEntity<List<BooksDataResponse.Book>> findBytitle(){
+        return new ResponseEntity<>(homeService.find(),HttpStatus.OK) ;
+    }
+
 
 }

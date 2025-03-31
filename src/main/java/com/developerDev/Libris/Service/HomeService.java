@@ -5,7 +5,10 @@ import com.developerDev.Libris.ExceptionHandler.CustomException;
 import com.developerDev.Libris.JsonResposeEntity.BooksDataResponse;
 import com.developerDev.Libris.JsonResposeEntity.Kittens;
 import com.developerDev.Libris.Repository.BooksRepository;
+import com.developerDev.Libris.Repository.BooksRepositoryImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,11 +27,13 @@ public class HomeService {
     private final String url="https://gutendex.com/books";
     private final BooksRepository booksRepository;
     private final Random randomValue = new Random();
+    private final BooksRepositoryImpl dbQuery;
 
 
-    public HomeService(RestTemplate restTemplate, BooksRepository booksRepository) {
+    public HomeService(RestTemplate restTemplate, BooksRepository booksRepository, BooksRepositoryImpl dbQuery) {
         this.restTemplate = restTemplate;
         this.booksRepository = booksRepository;
+        this.dbQuery = dbQuery;
     }
 
 
@@ -74,6 +79,11 @@ public class HomeService {
         }catch (Exception e){
             throw new CustomException("Not found",HttpStatus.NOT_FOUND);
         }
+    }
+
+
+    public List<BooksDataResponse.Book> find(){
+        return dbQuery.findByTitle();
     }
 
 

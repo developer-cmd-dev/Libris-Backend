@@ -55,6 +55,7 @@ public class EmailService {
 
            // Send the email
            javaMailSender.send(message);
+
        }catch (Exception e){
            throw new CustomException(e.getLocalizedMessage(), HttpStatus.BAD_REQUEST);
        }
