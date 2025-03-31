@@ -13,10 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Stream;
 
 @Service
@@ -24,7 +21,7 @@ import java.util.stream.Stream;
 public class HomeService {
 
     private final RestTemplate restTemplate;
-    private final String url="https://gutendex.com/book";
+    private final String url="https://gutendex.com/books";
     private final BooksRepository booksRepository;
     private final Random randomValue = new Random();
 
@@ -56,6 +53,27 @@ public class HomeService {
         return dbData;
 
 
+    }
+
+
+    @Transactional
+    public BooksDataResponse searchBook(String query){
+        try {
+            String searchUrl = url.replace("books","books/?search="+query.toLowerCase());
+            ResponseEntity<BooksDataResponse> response = restTemplate.exchange(searchUrl,HttpMethod.GET,null,
+                    BooksDataResponse.class);
+            List<BooksDataResponse.Book> responseArr = response.getBody().getResults();
+            responseArr.stream().forEach((value)->{
+                Optional<BooksDataResponse.Book> bookResponse = booksRepository.findById(value.getId());
+                if(bookResponse.isPresent()){
+                    booksRepository.save(value);
+                }
+            });
+            return response.getBody();
+
+        }catch (Exception e){
+            throw new CustomException("Not found",HttpStatus.NOT_FOUND);
+        }
     }
 
 

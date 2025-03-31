@@ -47,4 +47,13 @@ public class HomeController {
         User user = rentBookService.rentBook(data,bookId);
         return new ResponseEntity<>(user.getRentedBooks(),HttpStatus.OK);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<BooksDataResponse> searchBook(@RequestParam(name="title") String value){
+        log.info(value);
+        BooksDataResponse response = homeService.searchBook(value);
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
+
+
 }
