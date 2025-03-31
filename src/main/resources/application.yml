@@ -9,7 +9,6 @@ spring:
     post: 587
     username: ${GMAIL}
     password: ${APP_KEY}
-    from: ${GMAIL}
     properties:
       mail:
         smtp:
