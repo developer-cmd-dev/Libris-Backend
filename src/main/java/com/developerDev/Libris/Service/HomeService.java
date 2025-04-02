@@ -42,7 +42,7 @@ public class HomeService {
     @Transactional
     public List<BooksDataResponse.Book> getAllBooks() {
         List<BooksDataResponse.Book> dbData = booksRepository.findAll();
-        if (dbData.isEmpty() || dbData == null) {
+        if (dbData.isEmpty()) {
             try {
                 ResponseEntity<BooksDataResponse> response = restTemplate.exchange(url, HttpMethod.GET, null,
                         BooksDataResponse.class);
@@ -57,7 +57,6 @@ public class HomeService {
                         HttpStatus.BAD_REQUEST);
             }
         }
-
         return dbData;
 
 
@@ -73,38 +72,43 @@ public class HomeService {
                 String searchUrl = url.replace("books", "books/?search=" + query.toLowerCase());
                 ResponseEntity<BooksDataResponse> response = restTemplate.exchange(searchUrl, HttpMethod.GET, null,
                         BooksDataResponse.class);
-                Objects.requireNonNull(response.getBody()).getResults().forEach((value) -> {
-                    ObjectMapper objectMapper = new ObjectMapper();
-                    Map<String, Object> bookMap = objectMapper.convertValue(value, Map.class);
-                    if (bookMap.containsKey("formats")) {
-                        Map<String, String> formats = (Map<String, String>) bookMap.get("formats");
-                        Map<String, String> sanitizedFormats = new HashMap<>();
-                        for (Map.Entry<String, String> entry : formats.entrySet()) {
-                            String sanitizedKey = entry.getKey().replace(".", "_"); // Replace dots with "_"
-                            sanitizedFormats.put(sanitizedKey, entry.getValue());
-                        }
-                        bookMap.put("formats", sanitizedFormats);
-                        BooksDataResponse.Book editedValue = objectMapper.convertValue(bookMap,
-                                BooksDataResponse.Book.class);
-                        Optional<BooksDataResponse.Book> bookResponse = booksRepository.findById(editedValue.getId());
-                        if (bookResponse.isEmpty()) {
-                            System.out.println(editedValue.toString());
-                            editedValue.setPrice(randomValue.nextDouble(1000));
-                            BooksDataResponse.Book save = booksRepository.save(editedValue);
-                            newSearchedBookList.add(save);
-                        }else {
-                            newSearchedBookList.add(bookResponse.get());
-                        }
 
-                    }
-                });
+                if (!response.getBody().getResults().isEmpty()){
+                    Objects.requireNonNull(response.getBody()).getResults().forEach((value) -> {
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        Map<String, Object> bookMap = objectMapper.convertValue(value, Map.class);
+                        if (bookMap.containsKey("formats")) {
+                            Map<String, String> formats = (Map<String, String>) bookMap.get("formats");
+                            Map<String, String> sanitizedFormats = new HashMap<>();
+                            for (Map.Entry<String, String> entry : formats.entrySet()) {
+                                String sanitizedKey = entry.getKey().replace(".", "_"); // Replace dots with "_"
+                                sanitizedFormats.put(sanitizedKey, entry.getValue());
+                            }
+                            bookMap.put("formats", sanitizedFormats);
+                            BooksDataResponse.Book editedValue = objectMapper.convertValue(bookMap,
+                                    BooksDataResponse.Book.class);
+                            Optional<BooksDataResponse.Book> bookResponse = booksRepository.findById(editedValue.getId());
+                            if (bookResponse.isEmpty()) {
+                                System.out.println(editedValue.toString());
+                                editedValue.setPrice(randomValue.nextDouble(1000));
+                                BooksDataResponse.Book save = booksRepository.save(editedValue);
+                                newSearchedBookList.add(save);
+                            }else {
+                                newSearchedBookList.add(bookResponse.get());
+                            }
+
+                        }
+                    });
+                }else{
+                    throw new CustomException("Not found", HttpStatus.NOT_FOUND);
+                }
                 return newSearchedBookList;
             }
 
             return findInDb;
 
         } catch (Exception e) {
-            throw new CustomException(e.getMessage(), HttpStatus.NOT_FOUND);
+            throw new CustomException("Not found", HttpStatus.NOT_FOUND);
         }
     }
 

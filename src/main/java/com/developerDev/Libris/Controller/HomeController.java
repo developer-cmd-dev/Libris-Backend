@@ -20,7 +20,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("home")
+@RequestMapping("/home")
 public class HomeController {
 
     private final HomeService homeService;
