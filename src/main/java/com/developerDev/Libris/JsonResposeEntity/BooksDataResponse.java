@@ -1,13 +1,15 @@
 package com.developerDev.Libris.JsonResposeEntity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 
 import java.util.List;
 import java.util.Map;
 
 @Data
+@Builder
 public class BooksDataResponse {
     private int count;
     private String next;
@@ -15,6 +17,11 @@ public class BooksDataResponse {
     private List<Book> results;
 
     @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
     public static class Book {
         @Id
         @JsonProperty("id")

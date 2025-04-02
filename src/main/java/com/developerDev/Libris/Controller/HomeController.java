@@ -49,16 +49,12 @@ public class HomeController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<BooksDataResponse> searchBook(@RequestParam(name="title") String value){
+    public ResponseEntity<List<BooksDataResponse.Book>> searchBook(@RequestParam(name="title") String value){
         log.info(value);
-        BooksDataResponse response = homeService.searchBook(value);
+        List<BooksDataResponse.Book> response = homeService.searchBook(value);
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-    @GetMapping("/search/findByTitle")
-    public ResponseEntity<List<BooksDataResponse.Book>> findBytitle(){
-        return new ResponseEntity<>(homeService.find(),HttpStatus.OK) ;
-    }
 
 
 }
