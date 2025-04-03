@@ -45,6 +45,8 @@ public class SecurityConfig {
 
         return http.authorizeHttpRequests(request -> request
                         .requestMatchers("/user/**","/home/rent-book/**").authenticated()
+                        .requestMatchers("/home/return-book").authenticated()
+                        .requestMatchers("/home/get-rented-book").authenticated()
                         .requestMatchers("/public/**","/health-check","/home/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())

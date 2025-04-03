@@ -34,27 +34,41 @@ public class HomeController {
 
 
     @GetMapping
-    public ResponseEntity<List<BooksDataResponse.Book>> getAllBooks(){
+    public ResponseEntity<List<BooksDataResponse.Book>> getAllBooks() {
         List<BooksDataResponse.Book> res = homeService.getAllBooks();
-        if (res!=null){
+        if (res != null) {
             return new ResponseEntity<>(res, HttpStatus.OK);
         }
-        throw new CustomException("Something went wrong!",HttpStatus.INTERNAL_SERVER_ERROR);
+        throw new CustomException("Something went wrong!", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PostMapping("/rent-book/{bookId}")
-    public  ResponseEntity<List<RentedBooksData>> rentBook(@RequestBody RentedBooksData data, @PathVariable String bookId){
-        User user = rentBookService.rentBook(data,bookId);
-        return new ResponseEntity<>(user.getRentedBooks(),HttpStatus.OK);
+    public ResponseEntity<List<RentedBooksData>> rentBook(@RequestBody RentedBooksData data,
+                                                          @PathVariable String bookId) {
+        User user = rentBookService.rentBook(data, bookId);
+        return new ResponseEntity<>(user.getRentedBooks(), HttpStatus.OK);
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<BooksDataResponse.Book>> searchBook(@RequestParam(name="title") String value){
-        log.info(value);
-        List<BooksDataResponse.Book> response = homeService.searchBook(value);
+    @PostMapping("/return-book/{bookId}")
+    public ResponseEntity<RentedBooksData> returnBook(@PathVariable String bookId) {
+        RentedBooksData response = rentBookService.returnBook(bookId);
+        assert response != null;
+        return new ResponseEntity<>(response, HttpStatus.OK);
+
+    }
+
+    @GetMapping("/get-rented-book")
+    public ResponseEntity<List<RentedBooksData>> getRentedBooksData(){
+        List<RentedBooksData> response = rentBookService.getRentedBooksData();
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<BooksDataResponse.Book>> searchBook(@RequestParam(name = "title") String value) {
+        log.info(value);
+        List<BooksDataResponse.Book> response = homeService.searchBook(value);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
 
 }
