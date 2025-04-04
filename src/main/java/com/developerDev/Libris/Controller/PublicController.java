@@ -5,6 +5,7 @@ import com.developerDev.Libris.ExceptionHandler.CustomException;
 import com.developerDev.Libris.Service.UserDetailServiceImpl;
 import com.developerDev.Libris.Service.UserService;
 import com.developerDev.Libris.Utils.JWTUtil;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/public")
 public class PublicController {
@@ -26,44 +29,45 @@ public class PublicController {
     private final AuthenticationManager authenticationManager;
     private final UserDetailServiceImpl userDetailService;
     private final JWTUtil jwtUtil;
-    public PublicController(UserService userService,AuthenticationManager authenticationManager,
-                            UserDetailServiceImpl userDetailService,JWTUtil jwtUtil){
-        this.userService= userService;
-        this.authenticationManager=authenticationManager;
+
+    public PublicController(UserService userService, AuthenticationManager authenticationManager,
+                            UserDetailServiceImpl userDetailService, JWTUtil jwtUtil) {
+        this.userService = userService;
+        this.authenticationManager = authenticationManager;
         this.userDetailService = userDetailService;
-        this.jwtUtil =jwtUtil;
+        this.jwtUtil = jwtUtil;
     }
 
 
     @GetMapping("/health-check")
-    public ResponseEntity<String> healthCheck(){
+    public ResponseEntity<String> healthCheck() {
         return new ResponseEntity<>("Welcome to the Libris Server.", HttpStatus.OK);
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody User user){
+    public ResponseEntity<String> signup(@RequestBody User user) {
+
         User response = userService.addUser(user);
-        if(response==null){
-            throw new CustomException("Something went wrong",HttpStatus.BAD_REQUEST);
+        if (response == null) {
+            throw new CustomException("Something went wrong", HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>("User saved.",HttpStatus.OK);
+        return new ResponseEntity<>("User saved.", HttpStatus.OK);
 
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User user, HttpServletResponse response){
+    public ResponseEntity<Map<String,String>> login(@RequestBody User user, HttpServletResponse response) {
 
-            String token = userService.loginUser(user);
-            response.setHeader("cookie",token);
-            return new ResponseEntity<>("Login Successfully",HttpStatus.OK);
-
-
+        String token = userService.loginUser(user);
+        Cookie cookie = new Cookie("access_token", token);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+//            response.setHeader("cookie",token);
+        return new ResponseEntity<>(Map.of("access_token",token), HttpStatus.OK);
 
 
     }
-
-
-
 
 
 }

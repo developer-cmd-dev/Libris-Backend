@@ -53,7 +53,7 @@ public class UserService {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             return userRepository.save(user);
         }
-        return isUserAvail;
+       throw new CustomException("User already Existed",HttpStatus.NOT_ACCEPTABLE);
     }
 
     public String loginUser(User user){
