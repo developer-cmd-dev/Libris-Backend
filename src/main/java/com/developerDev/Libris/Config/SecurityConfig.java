@@ -44,7 +44,7 @@ public class SecurityConfig {
     public DefaultSecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         return http.authorizeHttpRequests(request -> request
-                        .requestMatchers("/user/**","/home/rent-book/**").authenticated()
+                        .requestMatchers("/user/**","/home/rent-book/**","/public/verify-token").authenticated()
                         .requestMatchers("/home/return-book").authenticated()
                         .requestMatchers("/home/get-rented-book").authenticated()
                         .requestMatchers("/public/**","/health-check","/home/**").permitAll()

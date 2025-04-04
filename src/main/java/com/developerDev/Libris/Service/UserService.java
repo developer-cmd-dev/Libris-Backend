@@ -110,6 +110,16 @@ public class UserService {
         throw new CustomException("Something wrong to delete saved book!",HttpStatus.BAD_REQUEST);
     }
 
+    public User verifyToken(String username){
+        try{
+            User user= userRepository.findByEmail(username).orElse(null);
+            user.setPassword(null);
+            return user;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
 
 

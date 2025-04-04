@@ -2,6 +2,7 @@ package com.developerDev.Libris.Controller;
 
 import com.developerDev.Libris.Entity.User;
 import com.developerDev.Libris.ExceptionHandler.CustomException;
+import com.developerDev.Libris.Repository.UserReopository;
 import com.developerDev.Libris.Service.UserDetailServiceImpl;
 import com.developerDev.Libris.Service.UserService;
 import com.developerDev.Libris.Utils.JWTUtil;
@@ -15,6 +16,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +32,7 @@ public class PublicController {
     private final AuthenticationManager authenticationManager;
     private final UserDetailServiceImpl userDetailService;
     private final JWTUtil jwtUtil;
+
 
     public PublicController(UserService userService, AuthenticationManager authenticationManager,
                             UserDetailServiceImpl userDetailService, JWTUtil jwtUtil) {
@@ -66,6 +69,14 @@ public class PublicController {
         return new ResponseEntity<>(res, HttpStatus.OK);
 
 
+    }
+
+
+    @GetMapping("/verify-token")
+    public ResponseEntity<User> verifyToken(){
+       String username= SecurityContextHolder.getContext().getAuthentication().getName();
+       User user = userService.verifyToken(username);
+        return new ResponseEntity<>(user,HttpStatus.OK);
     }
 
 
