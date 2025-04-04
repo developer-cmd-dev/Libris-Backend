@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -56,15 +57,13 @@ public class PublicController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String,String>> login(@RequestBody User user, HttpServletResponse response) {
-
-        String token = userService.loginUser(user);
-        Cookie cookie = new Cookie("access_token", token);
+    public ResponseEntity<Map<String,Object>> login(@RequestBody User user, HttpServletResponse response) {
+        Map<String,Object> res = userService.loginUser(user);
+        Cookie cookie = new Cookie("access_token",(String) res.get("access_token"));
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         response.addCookie(cookie);
-//            response.setHeader("cookie",token);
-        return new ResponseEntity<>(Map.of("access_token",token), HttpStatus.OK);
+        return new ResponseEntity<>(res, HttpStatus.OK);
 
 
     }

@@ -17,8 +17,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -56,10 +59,16 @@ public class UserService {
        throw new CustomException("User already Existed",HttpStatus.NOT_ACCEPTABLE);
     }
 
-    public String loginUser(User user){
+    @Transactional
+    public Map<String, Object> loginUser(User user){
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(),user.getPassword()));
-        UserDetails userDetails =  userDetailService.loadUserByUsername(user.getEmail());
-        return  jwtUtil.generateToken(userDetails.getUsername());
+        User userData = userRepository.findByEmail(user.getEmail()).orElse(null);
+        userData.setPassword(null);
+        String token = jwtUtil.generateToken(userData.getEmail());
+        HashMap<String,Object> userDataObj = new HashMap<>();
+        userDataObj.put("access_token",token);
+        userDataObj.put("userDetails",userData);
+        return userDataObj;
     }
 
     public String updatePassword(String password){
