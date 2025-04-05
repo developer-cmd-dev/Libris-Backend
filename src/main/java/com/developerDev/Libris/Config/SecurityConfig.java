@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -43,7 +44,9 @@ public class SecurityConfig {
     @Bean
     public DefaultSecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        return http.authorizeHttpRequests(request -> request
+        return http
+                .cors(Customizer.withDefaults())
+                .authorizeHttpRequests(request -> request
                         .requestMatchers("/user/**","/home/rent-book/**","/public/verify-token").authenticated()
                         .requestMatchers("/home/return-book").authenticated()
                         .requestMatchers("/home/get-rented-book").authenticated()

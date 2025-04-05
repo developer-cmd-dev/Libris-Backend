@@ -12,9 +12,9 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.OptionalInt;
+
 
 @Slf4j
 @Component
@@ -23,6 +23,7 @@ public class RentedBooksDueDateScheduler {
     private final RentedBooksRepository repository;
     private final EmailService emailService;
     private final RentBookService rentBookService;
+    public final List<RentedBooksData> cacheData=new ArrayList<>();
 
     public RentedBooksDueDateScheduler(RentedBooksRepository repository, EmailService emailService,
                                        RentBookService rentBookService) {
@@ -35,9 +36,15 @@ public class RentedBooksDueDateScheduler {
     @Scheduled(fixedRate = 1000 * 60)
     public void returnRentedBook() {
         try {
-            List<RentedBooksData> rentedBooks = repository.findAll();
+
+            if(cacheData.isEmpty()){
+                List<RentedBooksData> rentedBooks = repository.findAll();
+                cacheData.addAll(rentedBooks);
+            }
+
+
             LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
-            for (RentedBooksData booksValue : rentedBooks) {
+            for (RentedBooksData booksValue : cacheData) {
             if(!booksValue.isReturned()){
                 LocalDateTime dueDate = booksValue.getDueDate().truncatedTo(ChronoUnit.MINUTES);
                 if (now.isEqual(dueDate)) {
