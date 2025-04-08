@@ -33,16 +33,15 @@ public class RentBookService {
     private final UserReopository userReopository;
     private final EmailService emailService;
     private final BooksRepositoryImpl query;
-    private final RentedBooksDueDateScheduler rentedBookScheduler;
 
     @Autowired
-    public RentBookService(RentedBooksRepository rentedBooksRepository, BooksRepository booksRepository, UserReopository userReopository, EmailService emailService, BooksRepositoryImpl query, RentedBooksDueDateScheduler rentedBookScheduler) {
+    public RentBookService(RentedBooksRepository rentedBooksRepository, BooksRepository booksRepository, UserReopository userReopository, EmailService emailService, BooksRepositoryImpl query) {
         this.rentedBooksRepository = rentedBooksRepository;
         this.booksRepository = booksRepository;
         this.userReopository = userReopository;
         this.emailService = emailService;
         this.query = query;
-        this.rentedBookScheduler = rentedBookScheduler;
+
     }
     Supplier<String> getAuthenticatedName=()-> SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -67,7 +66,6 @@ public class RentBookService {
           RentedBooksData response =  rentedBooksRepository.save(data);
             user.getRentedBooks().add(response);
             try{
-                rentedBookScheduler.cacheData.add(response);
                 emailService.sendRentConfirmationMail(getAuthenticatedName.get(),getBook,data);
             }catch (Exception e){
                 throw new CustomException(e.getLocalizedMessage(),HttpStatus.BAD_REQUEST);
