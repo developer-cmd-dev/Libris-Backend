@@ -18,7 +18,7 @@ public class RentedBooksData {
     @Id
     private ObjectId id;
     private int bookId;
-    private LocalDateTime rentalDate;
+    private LocalDateTime rentalDate=LocalDateTime.now();
     private LocalDateTime dueDate;
     private boolean isReturned = false;
     private double rentalCost;
