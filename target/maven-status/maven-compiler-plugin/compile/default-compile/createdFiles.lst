@@ -1,0 +1,6 @@
+com\developerDev\Libris\AuthenticationFailureHandler\CustomBearerAuthenticationEntryPoint.class
+com\developerDev\Libris\Config\CorsConfig.class
+com\developerDev\Libris\Config\SecurityConfig.class
+com\developerDev\Libris\Config\CorsConfig$1.class
+com\developerDev\Libris\AuthenticationFailureHandler\CustomAccessDeniedBearerToken.class
+com\developerDev\Libris\AuthenticationFailureHandler\CustomBasicAuthenticationEntryPoint.class
