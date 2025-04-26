@@ -8,17 +8,14 @@ import com.developerDev.Libris.Repository.BooksRepository;
 import com.developerDev.Libris.Repository.BooksRepositoryImpl;
 import com.developerDev.Libris.Repository.RentedBooksRepository;
 import com.developerDev.Libris.Repository.UserReopository;
-import com.developerDev.Libris.Scheduler.RentedBooksDueDateScheduler;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
