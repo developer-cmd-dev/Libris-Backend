@@ -11,6 +11,7 @@
 	<groupId>com.developerDev</groupId>
 	<artifactId>Libris</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 	<name>Libris</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
@@ -117,6 +118,14 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>3.1.0</version> <!-- Use your Spring Boot version -->
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
