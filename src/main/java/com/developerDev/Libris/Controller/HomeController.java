@@ -48,7 +48,6 @@ public class HomeController {
                                                           @PathVariable String bookId) {
 
         User user = rentBookService.rentBook(data, bookId);
-        log.info(user.toString());
 
         return new ResponseEntity<>(user.getRentedBooks(), HttpStatus.OK);
     }
