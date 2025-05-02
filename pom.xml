@@ -117,13 +117,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>repackage</goal>
-						</goals>
-					</execution>
-				</executions>
+				<version>3.1.0</version> <!-- Use your Spring Boot version -->
 			</plugin>
 		</plugins>
 	</build>
