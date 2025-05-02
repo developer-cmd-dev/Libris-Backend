@@ -63,11 +63,7 @@ public class RentBookService {
           RentedBooksData response =  rentedBooksRepository.save(data);
 
             user.getRentedBooks().add(response);
-//            try{
-//                emailService.sendRentConfirmationMail(getAuthenticatedName.get(),getBook,data);
-//            }catch (Exception e){
-//                throw new CustomException("Something went wrong to send email rental confirmation email!",HttpStatus.BAD_REQUEST);
-//            }
+
           return userReopository.save(user);
         }
        }else{
