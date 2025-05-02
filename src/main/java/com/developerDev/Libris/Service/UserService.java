@@ -83,7 +83,7 @@ public class UserService {
     }
 
     public User saveBook(int bookId,String username){
-
+        log.info(username);
         BooksDataResponse.Book findBookInDb=booksRepository.findById(bookId).orElse(null);
         if(findBookInDb!=null){
             User getUser = userRepository.findByEmail(username).orElse(null);

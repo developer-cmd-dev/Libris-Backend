@@ -10,6 +10,7 @@ import com.developerDev.Libris.Service.RentBookService;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Marker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +46,10 @@ public class HomeController {
     @PostMapping("/rent-book/{bookId}")
     public ResponseEntity<List<RentedBooksData>> rentBook(@RequestBody RentedBooksData data,
                                                           @PathVariable String bookId) {
+
         User user = rentBookService.rentBook(data, bookId);
+        log.info(user.toString());
+
         return new ResponseEntity<>(user.getRentedBooks(), HttpStatus.OK);
     }
 

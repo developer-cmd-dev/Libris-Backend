@@ -68,6 +68,7 @@ public class EmailService {
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message,true);
             helper.setTo(to);
+
             helper.setSubject("Libris Open Library");
             helper.setFrom("librisopenlibrary@gmail.com");
             Context context = new Context();

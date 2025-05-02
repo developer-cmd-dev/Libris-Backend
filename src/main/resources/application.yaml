@@ -4,14 +4,14 @@ spring:
   port: 8080
   data:
     mongodb:
-      uri: ${MONGO_URL}
+      uri: mongodb+srv://devkmandal0:Devk4522@cluster0.0f66d.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
       database: Libris
       auto-index-creation: true
   mail:
     host: smtp.gmail.com
     post: 587
     username: ${GMAIL}
-    password: ${APP_KEY}
+    password: jfsa xfwm ztys qvhh
     properties:
       mail:
         smtp:
@@ -21,7 +21,7 @@ spring:
 
 
 jwt:
-  secretKey: ${JWT_SECRET_KEY}
+  secretKey: 8104cb6dfca5675655d95fb0a7267998333d7839eb666d1fa6eb919d81fe5e1279fc82c735c403f317d5bb7acc70b6424f081f41cd965b8a283866c91482e7bf583b6b46a65efc0d25b01eb991aefddce29125bf9fb9f397e2aaa7dc4dfc9eaaf39ce817f8d3a40c0260aba010d6dcfdd0ea1fa5aa47dd2be39670e905c41234
 
 
 

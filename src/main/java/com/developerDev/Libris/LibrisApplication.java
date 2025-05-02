@@ -12,6 +12,7 @@ import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 @EnableScheduling
+//@EnableMongoRepositories(basePackages = "com.developerDev.Libris.Repository")
 public class LibrisApplication {
 
 	public static void main(String[] args) {
