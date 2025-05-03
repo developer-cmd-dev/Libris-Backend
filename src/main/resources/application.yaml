@@ -10,7 +10,7 @@ spring:
   mail:
     host: smtp.gmail.com
     post: 587
-    username: ${GMAIL}
+    username: librisopenlibrary@gmail.com
     password: jfsa xfwm ztys qvhh
     properties:
       mail:

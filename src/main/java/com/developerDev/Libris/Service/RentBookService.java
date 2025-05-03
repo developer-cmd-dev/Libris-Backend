@@ -63,7 +63,11 @@ public class RentBookService {
           RentedBooksData response =  rentedBooksRepository.save(data);
 
             user.getRentedBooks().add(response);
-
+//            try{
+//                emailService.sendRentConfirmationMail(getAuthenticatedName.get(),getBook,data);
+//            }catch (Exception e){
+//                throw new CustomException("Something went wrong to send email rental confirmation email!",HttpStatus.BAD_REQUEST);
+//            }
           return userReopository.save(user);
         }
        }else{
@@ -77,11 +81,11 @@ public class RentBookService {
             rentedBooksData.setDueDate(data.getDueDate());
             RentedBooksData save = rentedBooksRepository.save(rentedBooksData);
             user.getRentedBooks().add(save);
-           try{
-               emailService.sendRentConfirmationMail(getAuthenticatedName.get(),getBook,data);
-           }catch (Exception e){
-               throw new CustomException(e.getLocalizedMessage(),HttpStatus.BAD_REQUEST);
-           }
+//           try{
+//               emailService.sendRentConfirmationMail(getAuthenticatedName.get(),getBook,data);
+//           }catch (Exception e){
+//               throw new CustomException(e.getLocalizedMessage(),HttpStatus.BAD_REQUEST);
+//           }
            return userReopository.save(user);
        }
 

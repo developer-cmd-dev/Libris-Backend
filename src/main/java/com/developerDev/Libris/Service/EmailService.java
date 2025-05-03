@@ -5,6 +5,7 @@ import com.developerDev.Libris.JsonResposeEntity.BooksDataResponse;
 import com.developerDev.Libris.JsonResposeEntity.RentedBooksData;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -15,6 +16,7 @@ import org.thymeleaf.context.Context;
 
 import java.util.function.Supplier;
 
+@Slf4j
 @Service
 public class EmailService {
 
@@ -57,6 +59,7 @@ public class EmailService {
            javaMailSender.send(message);
 
        }catch (Exception e){
+           log.error(e.getMessage());
            throw new CustomException(e.getLocalizedMessage(), HttpStatus.BAD_REQUEST);
        }
 
