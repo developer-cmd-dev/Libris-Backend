@@ -111,7 +111,7 @@ public class RentBookService {
 
 
     @Transactional
-    public RentedBooksData returnBook(String bookId){
+    public List<Object> returnBook(String bookId){
         int id = Integer.parseInt(bookId);
       try{
           String username = getAuthenticatedName.get();
@@ -121,7 +121,11 @@ public class RentBookService {
             if(data.getBookId()==id&&data.getUsername().equals(username)){
                 data.setReturned(true);
                 data.setPaymentStatus("not completed");
-               return rentedBooksRepository.save(data);
+                user.getRentedBooks().remove(data);
+                User userData = userReopository.save(user);
+                RentedBooksData returnedBookData = rentedBooksRepository.save(data);
+                return List.of(userData,returnedBookData);
+
             }
             }
 

@@ -37,6 +37,7 @@ public class HomeController {
     @GetMapping
     public ResponseEntity<List<BooksDataResponse.Book>> getAllBooks() {
         List<BooksDataResponse.Book> res = homeService.getAllBooks();
+        System.out.println(res.size());
         if (res != null) {
             return new ResponseEntity<>(res, HttpStatus.OK);
         }
@@ -53,8 +54,8 @@ public class HomeController {
     }
 
     @PostMapping("/return-book/{bookId}")
-    public ResponseEntity<RentedBooksData> returnBook(@PathVariable String bookId) {
-        RentedBooksData response = rentBookService.returnBook(bookId);
+    public ResponseEntity<  List<Object>> returnBook(@PathVariable String bookId) {
+        List<Object> response = rentBookService.returnBook(bookId);
         assert response != null;
         return new ResponseEntity<>(response, HttpStatus.OK);
 
